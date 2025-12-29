@@ -7,7 +7,6 @@ from typing import Union
 import yt_dlp
 from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
-from youtubesearchpython.__future__ import VideosSearch
 
 from DAXXMUSIC.utils.database import is_on_off
 from DAXXMUSIC.utils.formatters import time_to_seconds
@@ -127,16 +126,22 @@ class YouTubeAPI:
             link = self.base + link
         if "&" in link:
             link = link.split("&")[0]
-        results = VideosSearch(link, limit=1)
-        for result in (await results.next())["result"]:
-            title = result["title"]
-            duration_min = result["duration"]
-            thumbnail = result["thumbnails"][0]["url"].split("?")[0]
-            vidid = result["id"]
-            if str(duration_min) == "None":
-                duration_sec = 0
-            else:
-                duration_sec = int(time_to_seconds(duration_min))
+
+        ydl_opts = {
+            "quiet": True,
+            "nocheckcertificate": True,
+            "cookiefile": cookie_txt_file(),
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(link, download=False)
+
+        title = info.get("title")
+        duration_sec = info.get("duration", 0)
+        duration_min = str(duration_sec // 60) + ":" + str(duration_sec % 60).zfill(2)
+        thumbnail = info.get("thumbnail")
+        vidid = info.get("id")
+
         return title, duration_min, duration_sec, thumbnail, vidid
 
     async def title(self, link: str, videoid: Union[bool, str] = None):
