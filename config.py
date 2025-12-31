@@ -58,6 +58,9 @@ DEV_ID = int(getenv("DEV_ID", 6253265083))
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
+# ================= TMDB (MOVIES / TV) =================
+TMDB_API_KEY = getenv("TMDB_API_KEY", None)
+
 UPSTREAM_REPO = getenv(
     "UPSTREAM_REPO",
     "https://github.com/un-bots/cronus",
