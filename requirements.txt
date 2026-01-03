@@ -43,6 +43,7 @@ faker
 pycountry
 qrcode
 pyfiglet
+feedparser
 img2pdf
 pycryptodome
 future==0.18.3
